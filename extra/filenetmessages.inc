@@ -1,16 +1,12 @@
 #if defined _filenetmessages_included
 	#endinput
 #endif
-
 #define _filenetmessages_included
-
-
 
 /*
  * The natives work quite pretty.
  * But the forwards are really tricky, no idea when they really fire. 
  */
-
 
 /**
  * Called when a file was received from a client to the server.
@@ -20,7 +16,7 @@
  * @param file            File that was received.
  * @param transferID      transfer ID.
  */
-forward FNM_OnFileReceived(client, const String:file[], transferID);
+forward void FNM_OnFileReceived(int client, const char[] file, int transferID);
 
 /**
  * Called when a client requests a file from the server.
@@ -31,7 +27,7 @@ forward FNM_OnFileReceived(client, const String:file[], transferID);
  *
  * @return                Plugin_Stop to deny the request, Plugin_Continue otherwise.
  */
-forward Action:FNM_OnFileRequested(client, const String:file[], transferID);
+forward Action FNM_OnFileRequested(int client, const char[] file, int transferID);
 
 /**
  * Called when a client denies a file request from the server.
@@ -41,7 +37,7 @@ forward Action:FNM_OnFileRequested(client, const String:file[], transferID);
  * @param file            File that was denied.
  * @param transferID      transfer ID.
  */
-forward FNM_OnFileDenied(client, const String:file[], transferID);
+forward void FNM_OnFileDenied(int client, const char[] file, int transferID);
 
 /**
  * Called when a file was sent to a client.
@@ -51,10 +47,7 @@ forward FNM_OnFileDenied(client, const String:file[], transferID);
  * @param file            File that was sent.
  * @param transferID      transfer ID.
  */
-forward FNM_OnFileSent(client, const String:file[], transferID);
-
-
-
+forward void FNM_OnFileSent(int client, const char[] file, int transferID);
 
 /**
  * Sends a file to a client
@@ -65,9 +58,7 @@ forward FNM_OnFileSent(client, const String:file[], transferID);
  *
  * @return                TransferID on success, otherwise 0.
  */
-native FNM_SendFile(client, const String:file[], any:...);
-
-
+native int FNM_SendFile(int client, const char[] file, any ...);
 
 /**
  * Requests a file from a client
@@ -78,37 +69,32 @@ native FNM_SendFile(client, const String:file[], any:...);
  *
  * @return                TransferID of the request.
  */
-native FNM_RequestFile(client, const String:file[], any:...);
-
-
-
-
-
+native int FNM_RequestFile(int client, const char[] file, any ...);
 
 
 /** Do Not Edit Below This Line **/
-public Extension:__ext_filenetmessages =
+public Extension __ext_filenetmessages =
 {
 	name = "filenetmessages",
 	file = "filenetmessages.ext",
 
-	#if defined AUTOLOAD_EXTENSIONS
-		autoload = 1,
-	#else
-		autoload = 0,
-	#endif
+#if defined AUTOLOAD_EXTENSIONS
+	autoload = 1,
+#else
+	autoload = 0,
+#endif
 
-	#if defined REQUIRE_EXTENSIONS
-		required = 1,
-	#else
-		required = 0,
-	#endif
+#if defined REQUIRE_EXTENSIONS
+	required = 1,
+#else
+	required = 0,
+#endif
 };
 
 #if !defined REQUIRE_EXTENSIONS
-	public __ext_filenetmessages_SetNTVOptional()
-	{
-		MarkNativeAsOptional("FNM_SendFile");
-		MarkNativeAsOptional("FNM_RequestFile");
-	}
+public void __ext_filenetmessages_SetNTVOptional()
+{
+	MarkNativeAsOptional("FNM_SendFile");
+	MarkNativeAsOptional("FNM_RequestFile");
+}
 #endif
